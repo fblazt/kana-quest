@@ -1,4 +1,4 @@
-import { Kana } from '../types/kana';
+import type { Kana } from '../types/kana';
 
 const generateSeed = (): Kana[] => {
   const hiraganaMap: Record<string, string> = {

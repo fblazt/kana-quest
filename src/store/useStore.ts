@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { initDB, seedDatabaseIfEmpty } from '../lib/db';
-import { Kana, UserStats } from '../types/kana';
+import type { Kana, UserStats } from '../types/kana';
 
 interface AppState {
   isReady: boolean;

@@ -1,5 +1,6 @@
-import { openDB, DBSchema, IDBPDatabase } from 'idb';
-import { Kana, ConfusionPair, UserStats } from '../types/kana';
+import { openDB } from 'idb';
+import type { DBSchema, IDBPDatabase } from 'idb';
+import type { Kana, ConfusionPair, UserStats } from '../types/kana';
 import { kanaSeed } from '../data/kanaSeed';
 
 interface KanaQuestDB extends DBSchema {
@@ -65,4 +66,6 @@ export const seedDatabaseIfEmpty = async () => {
       bestSpeedScore: 0
     });
   }
+  
+  db.close();
 };
