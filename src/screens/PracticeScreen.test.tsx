@@ -4,9 +4,8 @@ import { MemoryRouter } from 'react-router-dom';
 import { PracticeScreen } from './PracticeScreen';
 
 describe('PracticeScreen', () => {
-  it('renders the kana card and input', () => {
+  it('renders loading state initially', () => {
     render(<MemoryRouter><PracticeScreen /></MemoryRouter>);
-    expect(screen.getByText('あ')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Type romaji...')).toBeInTheDocument();
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
   });
 });

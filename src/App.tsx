@@ -13,7 +13,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/practice" element={<PracticeScreen />} />
-        <Route path="/summary" element={<SessionSummary />} />
+        <Route path="/session-summary" element={<SessionSummary />} />
         <Route path="/learning-path" element={<LearningPath />} />
         <Route path="/progress" element={<ProgressScreen />} />
         <Route path="/heat-map" element={<HeatMapScreen />} />
