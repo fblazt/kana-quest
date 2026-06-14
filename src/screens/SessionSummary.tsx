@@ -203,7 +203,7 @@ export const SessionSummary: React.FC = () => {
         )}
 
         {/* Continue */}
-        <Link to="/" className="w-full">
+        <Link to="/dashboard" className="w-full">
           <button className="w-full flex items-center justify-center gap-2 bg-primary text-on-primary font-sans font-medium py-3.5 px-6 rounded-xl transition-colors hover:bg-primary-container hover:text-on-primary-container">
             Continue Practice
             <span className="text-lg">→</span>

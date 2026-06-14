@@ -111,7 +111,7 @@ export const PracticeScreen: React.FC = () => {
         <div className="flex flex-col items-center justify-center flex-1 px-6">
           <p className="font-sans text-error mb-4">{error}</p>
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/dashboard')}
             className="px-4 py-2 bg-primary text-on-primary rounded-lg"
           >
             Go Home
@@ -139,7 +139,7 @@ export const PracticeScreen: React.FC = () => {
           <button
             onClick={() => {
               endSession();
-              navigate('/');
+              navigate('/dashboard');
             }}
             className="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors"
             aria-label="Close practice"
@@ -197,11 +197,18 @@ export const PracticeScreen: React.FC = () => {
           <div
             className={`transition-all duration-200 ${
               feedback === 'correct'
-                ? 'scale-105 ring-4 ring-primary/30'
+                ? 'ring-4 ring-primary/30'
                 : feedback === 'incorrect'
-                ? 'scale-95 ring-4 ring-error/30'
+                ? 'ring-4 ring-error/30'
                 : ''
             }`}
+            style={
+              feedback === 'correct'
+                ? { animation: 'correct-pulse 0.3s ease-out forwards' }
+                : feedback === 'incorrect'
+                ? { animation: 'incorrect-shake 0.4s ease-out' }
+                : undefined
+            }
           >
             <KanaCard kana={currentKana} />
           </div>

@@ -3,12 +3,6 @@ import { AppLayout } from '../components/layout/AppLayout';
 import { initDB, seedDatabaseIfEmpty } from '../lib/db';
 import type { UserStats, Kana } from '../types/kana';
 
-interface WeeklyData {
-  week: string;
-  accuracy: number;
-  reviews: number;
-}
-
 export const ProgressScreen: React.FC = () => {
   const [userStats, setUserStats] = useState<UserStats | null>(null);
   const [allKana, setAllKana] = useState<Kana[]>([]);
@@ -37,7 +31,6 @@ export const ProgressScreen: React.FC = () => {
   const totalReviews = userStats?.totalReviews || 0;
   const accuracy = userStats?.averageAccuracy || 0;
   const streak = userStats?.currentStreak || 0;
-  const longestStreak = userStats?.longestStreak || 0;
 
   const totalPracticeMinutes = Math.round(totalReviews * 8 / 60);
   const hours = Math.floor(totalPracticeMinutes / 60);

@@ -49,7 +49,7 @@ export const SettingsScreen: React.FC = () => {
   return (
     <AppLayout>
       <div className="px-6 pt-4 pb-6">
-        <h2 className="font-sans text-lg font-semibold text-on-surface text-center mb-6">Preferences</h2>
+        <h2 className="font-serif text-xl font-medium text-primary text-center mb-6">Preferences</h2>
 
         {/* Preferences */}
         <div className="mb-6">

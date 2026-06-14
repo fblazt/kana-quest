@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 
 const tabs = [
-  { to: '/', label: 'Home', icon: HomeIcon },
+  { to: '/dashboard', label: 'Home', icon: HomeIcon },
   { to: '/practice', label: 'Practice', icon: PracticeIcon },
   { to: '/progress', label: 'Progress', icon: ProgressIcon },
   { to: '/heat-map', label: 'Heat Map', icon: HeatMapIcon },
@@ -101,7 +101,7 @@ export const BottomNav: React.FC = () => {
           <NavLink
             key={to}
             to={to}
-            end={to === '/'}
+            end={to === '/dashboard'}
             className={({ isActive }) =>
               `flex flex-col items-center justify-center gap-1 w-full h-full transition-colors duration-200 ${
                 isActive ? 'text-primary' : 'text-on-surface-variant'

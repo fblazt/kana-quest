@@ -39,7 +39,7 @@ describe('SessionSummary', () => {
       </MemoryRouter>
     );
     const link = screen.getByText('Continue Practice').closest('a');
-    expect(link).toHaveAttribute('href', '/');
+    expect(link).toHaveAttribute('href', '/dashboard');
   });
 
   it('renders default state when no state provided', () => {

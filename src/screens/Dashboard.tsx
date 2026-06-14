@@ -41,7 +41,7 @@ export const Dashboard: React.FC = () => {
         )}
 
         {/* Continue Practice */}
-        <Link to="/practice" className="w-full max-w-sm mb-4">
+        <Link to="/practice/mode" className="w-full max-w-sm mb-4">
           <button className="w-full flex items-center justify-center gap-2 bg-primary text-on-primary font-sans font-medium py-3.5 px-6 rounded-xl transition-colors hover:bg-primary-container hover:text-on-primary-container">
             Continue Practice
             <span className="text-lg">→</span>

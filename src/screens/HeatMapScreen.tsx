@@ -5,9 +5,9 @@ import type { Kana } from '../types/kana';
 
 function getMasteryColor(mastery: number, total: number): string {
   if (total === 0) return 'bg-outline-variant/20 text-on-surface-variant';
-  if (mastery >= 80) return 'bg-[#8FBC8F] text-white';
-  if (mastery >= 50) return 'bg-[#BDB76B] text-white';
-  if (mastery > 0) return 'bg-[#E8A0A0] text-white';
+  if (mastery >= 80) return 'bg-primary text-on-primary';
+  if (mastery >= 50) return 'bg-tertiary-container text-on-tertiary-container';
+  if (mastery > 0) return 'bg-secondary-container text-on-secondary-container';
   return 'bg-outline-variant/20 text-on-surface-variant';
 }
 
@@ -83,15 +83,15 @@ export const HeatMapScreen: React.FC = () => {
         {/* Legend */}
         <div className="flex items-center justify-center gap-3 mb-6">
           <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded bg-[#8FBC8F]" />
+            <div className="w-3 h-3 rounded bg-primary" />
             <span className="font-sans text-[10px] text-on-surface-variant">Mastered</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded bg-[#BDB76B]" />
+            <div className="w-3 h-3 rounded bg-tertiary-container" />
             <span className="font-sans text-[10px] text-on-surface-variant">Learning</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded bg-[#E8A0A0]" />
+            <div className="w-3 h-3 rounded bg-secondary-container" />
             <span className="font-sans text-[10px] text-on-surface-variant">Weak</span>
           </div>
           <div className="flex items-center gap-1.5">
