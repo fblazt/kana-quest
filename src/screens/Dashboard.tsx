@@ -2,12 +2,20 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { AppLayout } from '../components/layout/AppLayout';
 import { MasteryGauge } from '../components/ui/MasteryGauge';
+import { useDashboardData } from '../hooks/useDashboardData';
 
 export const Dashboard: React.FC = () => {
-  const streak = 7;
-  const overallMastery = 68;
-  const hiraganaMastery = 82;
-  const katakanaMastery = 54;
+  const { userStats, hiraganaMastery, katakanaMastery, overallMastery, dueCount, loading } = useDashboardData();
+
+  if (loading) {
+    return (
+      <AppLayout>
+        <div className="flex items-center justify-center flex-1">
+          <p className="font-sans text-on-surface-variant">Loading...</p>
+        </div>
+      </AppLayout>
+    );
+  }
 
   return (
     <AppLayout>
@@ -16,7 +24,7 @@ export const Dashboard: React.FC = () => {
         <div className="flex items-center gap-2 mb-6 px-4 py-1.5 bg-secondary-container/40 rounded-full">
           <span className="text-sm">🔥</span>
           <span className="font-sans text-sm font-semibold text-on-surface">
-            {streak} Day Streak
+            {userStats.currentStreak} Day Streak
           </span>
         </div>
 
@@ -24,6 +32,13 @@ export const Dashboard: React.FC = () => {
         <div className="mb-8">
           <MasteryGauge percentage={overallMastery} />
         </div>
+
+        {/* Daily Review Count */}
+        {dueCount > 0 && (
+          <p className="font-sans text-xs text-on-surface-variant mb-4">
+            {dueCount} kana due for review today
+          </p>
+        )}
 
         {/* Continue Practice */}
         <Link to="/practice" className="w-full max-w-sm mb-4">

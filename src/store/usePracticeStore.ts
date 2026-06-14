@@ -161,6 +161,20 @@ export const usePracticeStore = create<PracticeState>((set, get) => ({
       await logConfusionPair(db, kana.id, romaji);
     }
 
+    const stats = await db.get('user_progress', 'main');
+    if (stats) {
+      const totalReviews = stats.totalReviews + 1;
+      const totalCorrect = stats.totalCorrect + (correct ? 1 : 0);
+      await db.put('user_progress', {
+        ...stats,
+        totalReviews,
+        totalCorrect,
+        totalWrong: stats.totalWrong + (correct ? 0 : 1),
+        averageAccuracy: Math.round((totalCorrect / totalReviews) * 100),
+        totalPracticeDays: Math.max(stats.totalPracticeDays, 1),
+      });
+    }
+
     db.close();
 
     const newTotalAnswered = state.sessionStats.totalAnswered + 1;

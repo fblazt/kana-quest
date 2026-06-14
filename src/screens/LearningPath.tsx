@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppLayout } from '../components/layout/AppLayout';
+import { initDB, seedDatabaseIfEmpty } from '../lib/db';
+import type { Kana } from '../types/kana';
 
 interface KanaGroup {
   name: string;
@@ -7,17 +9,27 @@ interface KanaGroup {
   romaji: string[];
   difficulty: 'Easy' | 'Medium' | 'Hard' | 'Expert';
   status: 'mastered' | 'current' | 'locked';
+  mastery: number;
 }
 
-const learningPath: KanaGroup[] = [
-  { name: 'Vowels', characters: ['あ', 'い', 'う', 'え', 'お'], romaji: ['a', 'i', 'u', 'e', 'o'], difficulty: 'Easy', status: 'mastered' },
-  { name: 'K-Group', characters: ['か', 'き', 'く', 'け', 'こ'], romaji: ['ka', 'ki', 'ku', 'ke', 'ko'], difficulty: 'Easy', status: 'current' },
-  { name: 'S-Group', characters: ['さ', 'し', 'す', 'せ', 'そ'], romaji: ['sa', 'shi', 'su', 'se', 'so'], difficulty: 'Medium', status: 'locked' },
-  { name: 'T-Group', characters: ['た', 'ち', 'つ', 'て', 'と'], romaji: ['ta', 'chi', 'tsu', 'te', 'to'], difficulty: 'Medium', status: 'locked' },
-  { name: 'N-Group', characters: ['な', 'に', 'ぬ', 'ね', 'の'], romaji: ['na', 'ni', 'nu', 'ne', 'no'], difficulty: 'Medium', status: 'locked' },
-  { name: 'H-Group', characters: ['は', 'ひ', 'ふ', 'へ', 'ほ'], romaji: ['ha', 'hi', 'fu', 'he', 'ho'], difficulty: 'Hard', status: 'locked' },
-  { name: 'M-Group', characters: ['ま', 'み', 'む', 'め', 'も'], romaji: ['ma', 'mi', 'mu', 'me', 'mo'], difficulty: 'Hard', status: 'locked' },
+const learningPathGroups: Omit<KanaGroup, 'status' | 'mastery'>[] = [
+  { name: 'Vowels', characters: ['あ', 'い', 'う', 'え', 'お'], romaji: ['a', 'i', 'u', 'e', 'o'], difficulty: 'Easy' },
+  { name: 'K-Group', characters: ['か', 'き', 'く', 'け', 'こ'], romaji: ['ka', 'ki', 'ku', 'ke', 'ko'], difficulty: 'Easy' },
+  { name: 'S-Group', characters: ['さ', 'し', 'す', 'せ', 'そ'], romaji: ['sa', 'shi', 'su', 'se', 'so'], difficulty: 'Medium' },
+  { name: 'T-Group', characters: ['た', 'ち', 'つ', 'て', 'と'], romaji: ['ta', 'chi', 'tsu', 'te', 'to'], difficulty: 'Medium' },
+  { name: 'N-Group', characters: ['な', 'に', 'ぬ', 'ね', 'の'], romaji: ['na', 'ni', 'nu', 'ne', 'no'], difficulty: 'Medium' },
+  { name: 'H-Group', characters: ['は', 'ひ', 'ふ', 'へ', 'ほ'], romaji: ['ha', 'hi', 'fu', 'he', 'ho'], difficulty: 'Hard' },
+  { name: 'M-Group', characters: ['ま', 'み', 'む', 'め', 'も'], romaji: ['ma', 'mi', 'mu', 'me', 'mo'], difficulty: 'Hard' },
 ];
+
+function calculateGroupMastery(characters: string[], allKana: Kana[]): number {
+  const groupKana = allKana.filter((k) => characters.includes(k.character));
+  if (groupKana.length === 0) return 0;
+  const mastered = groupKana.filter(
+    (k) => k.totalCorrect >= 5 && k.totalCorrect > k.totalWrong * 2
+  ).length;
+  return Math.round((mastered / groupKana.length) * 100);
+}
 
 function DifficultyBadge({ difficulty }: { difficulty: string }) {
   const colors: Record<string, string> = {
@@ -34,7 +46,53 @@ function DifficultyBadge({ difficulty }: { difficulty: string }) {
 }
 
 export const LearningPath: React.FC = () => {
-  const masteredCount = learningPath.filter(g => g.status === 'mastered').length;
+  const [allKana, setAllKana] = useState<Kana[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    const load = async () => {
+      await seedDatabaseIfEmpty();
+      const db = await initDB();
+      const kana = await db.getAll('kana_deck');
+      if (!cancelled) {
+        setAllKana(kana);
+        setLoading(false);
+      }
+      db.close();
+    };
+    load();
+    return () => { cancelled = true; };
+  }, []);
+
+  const learningPath: KanaGroup[] = learningPathGroups.map((group, index) => {
+    const mastery = calculateGroupMastery(group.characters, allKana);
+    let status: KanaGroup['status'] = 'locked';
+
+    if (index === 0) {
+      status = mastery >= 90 ? 'mastered' : 'current';
+    } else {
+      const prevGroup = learningPathGroups[index - 1];
+      const prevMastery = calculateGroupMastery(prevGroup.characters, allKana);
+      if (prevMastery >= 90) {
+        status = mastery >= 90 ? 'mastered' : 'current';
+      }
+    }
+
+    return { ...group, status, mastery };
+  });
+
+  const masteredCount = learningPath.filter((g) => g.status === 'mastered').length;
+
+  if (loading) {
+    return (
+      <AppLayout>
+        <div className="flex items-center justify-center flex-1">
+          <p className="font-sans text-on-surface-variant">Loading...</p>
+        </div>
+      </AppLayout>
+    );
+  }
 
   return (
     <AppLayout>
@@ -86,7 +144,7 @@ export const LearningPath: React.FC = () => {
                         {group.name}
                       </p>
                       <p className="font-sans text-xs text-on-surface-variant">
-                        {group.romaji.join('-')}
+                        {group.romaji.join('-')} · {group.mastery}%
                       </p>
                     </div>
                   </div>
