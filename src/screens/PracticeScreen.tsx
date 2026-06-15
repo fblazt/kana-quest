@@ -102,13 +102,15 @@ export const PracticeScreen: React.FC = () => {
 
   const currentKana = queue[currentIndex];
   const remaining = queue.length - currentIndex;
+  const total = queue.length + score; // approximate for now
+  const progressPercent = total > 0 ? (score / total) * 100 : 0;
   const elapsed = currentMode === 'speed' ? Math.floor(totalTime / 1000) : 0;
   const timeLeft = currentMode === 'speed' ? Math.max(0, 60 - elapsed) : 0;
 
   if (error) {
     return (
       <AppLayout hideBottomNav>
-        <div className="flex flex-col items-center justify-center flex-1 px-6">
+        <div className="flex flex-col items-center justify-center flex-1 px-lg">
           <p className="font-sans text-error mb-4">{error}</p>
           <button
             onClick={() => navigate('/dashboard')}
@@ -124,7 +126,7 @@ export const PracticeScreen: React.FC = () => {
   if (queue.length === 0 || !currentKana) {
     return (
       <AppLayout hideBottomNav>
-        <div className="flex flex-col items-center justify-center flex-1 px-6">
+        <div className="flex flex-col items-center justify-center flex-1 px-lg">
           <p className="font-sans text-on-surface-variant">Loading...</p>
         </div>
       </AppLayout>
@@ -135,71 +137,68 @@ export const PracticeScreen: React.FC = () => {
     <AppLayout
       hideBottomNav
       header={
-        <header className="w-full flex items-center justify-between px-4 h-14 bg-surface/80 backdrop-blur-md sticky top-0 z-10">
+        <header className="px-gutter py-md flex items-center justify-between border-b border-outline-variant bg-surface w-full max-w-container-max sticky top-0 z-10">
           <button
             onClick={() => {
               endSession();
               navigate('/dashboard');
             }}
-            className="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors"
+            className="p-2 hover:bg-surface-container rounded-full transition-colors"
             aria-label="Close practice"
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <path d="M18 6L6 18M6 6l12 12" />
-            </svg>
+            <span className="material-symbols-outlined text-on-surface-variant">close</span>
           </button>
-          <div className="flex items-center gap-4">
+          
+          <div className="flex-1 mx-lg max-w-md">
+            <div className="h-2 w-full bg-surface-container-highest rounded-full overflow-hidden">
+              <div className="h-full bg-primary rounded-full transition-all duration-500" style={{ width: `${progressPercent}%` }}></div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-xs text-on-surface-variant">
             {currentMode === 'survival' ? (
               <div className="flex items-center gap-1.5">
                 {[...Array(3)].map((_, i) => (
-                  <svg
+                  <span
                     key={i}
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill={i < lives ? 'currentColor' : 'none'}
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    className={i < lives ? 'text-error' : 'text-outline-variant/40'}
+                    className={`material-symbols-outlined text-[16px] ${i < lives ? 'text-secondary' : 'text-outline-variant/40'}`}
+                    style={i < lives ? { fontVariationSettings: "'FILL' 1" } : {}}
                   >
-                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                  </svg>
+                    favorite
+                  </span>
                 ))}
               </div>
             ) : currentMode === 'speed' ? (
-              <div className="flex items-center gap-1.5">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-primary">
-                  <circle cx="12" cy="12" r="10" />
-                  <polyline points="12 6 12 12 16 14" />
-                </svg>
-                <span className="font-sans text-sm font-semibold text-on-surface tabular-nums">
+              <div className="flex items-center gap-xs">
+                <span className="material-symbols-outlined text-primary text-[18px]">bolt</span>
+                <span className="font-sans font-semibold text-on-surface tabular-nums">
                   {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
                 </span>
               </div>
             ) : (
-              <>
-                <div className="flex items-center gap-1.5">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-primary"><path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z"/></svg>
-                  <span className="font-sans text-sm font-semibold text-on-surface">{streak}</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="font-sans text-sm font-semibold text-on-surface">{score}/{remaining + score}</span>
-                </div>
-              </>
+              <div className="flex items-center gap-xs">
+                <span className="material-symbols-outlined text-secondary text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>local_fire_department</span>
+                <span className="font-sans font-semibold text-on-surface">{streak}</span>
+              </div>
             )}
           </div>
         </header>
       }
     >
-      <div className="flex flex-col items-center justify-center flex-1 px-6">
+      <div className="flex-1 flex flex-col items-center justify-center px-gutter w-full pb-xxl">
+        {/* Progress Counter */}
+        <div className="mb-xl font-sans text-[12px] leading-[16px] font-semibold text-on-surface-variant uppercase tracking-[0.08em]">
+          {score} / {total}
+        </div>
+
         {/* Kana Card */}
-        <div className="mb-10 relative">
+        <div className="mb-xxl relative">
           <div
             className={`transition-all duration-200 ${
               feedback === 'correct'
-                ? 'ring-4 ring-primary/30'
+                ? 'ring-4 ring-primary/30 rounded-2xl'
                 : feedback === 'incorrect'
-                ? 'ring-4 ring-error/30'
+                ? 'ring-4 ring-error/30 rounded-2xl'
                 : ''
             }`}
             style={
@@ -223,29 +222,38 @@ export const PracticeScreen: React.FC = () => {
           )}
         </div>
 
-        {/* Input */}
-        <form onSubmit={handleSubmit} className="w-full max-w-xs mt-4">
-          <input
-            ref={inputRef}
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Type romaji..."
-            disabled={!!feedback}
-            className="w-full text-center text-2xl font-sans py-4 bg-transparent border-b-2 border-outline focus:border-primary outline-none transition-colors duration-300 text-on-surface disabled:opacity-50"
-            autoFocus
-            autoComplete="off"
-            autoCapitalize="off"
-            autoCorrect="off"
-            spellCheck={false}
-          />
-          {showHint && (
-            <p className="text-center font-sans text-xs text-on-surface-variant mt-3">
-              Press Enter to submit
-            </p>
-          )}
-        </form>
+        {/* Input Area */}
+        <div className="w-full max-w-[320px] relative">
+          <form onSubmit={handleSubmit} className="w-full">
+            <input
+              ref={inputRef}
+              type="text"
+              id="romaji-input"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Type Romaji"
+              disabled={!!feedback}
+              autoComplete="off"
+              autoCapitalize="off"
+              autoCorrect="off"
+              spellCheck={false}
+              className={`w-full bg-transparent border-b-2 py-md text-center font-serif text-[32px] leading-[40px] focus:outline-none transition-colors placeholder:text-on-surface-variant/30 ${
+                feedback === 'correct' 
+                  ? 'border-primary text-primary' 
+                  : feedback === 'incorrect'
+                  ? 'border-error text-error'
+                  : 'border-outline focus:border-primary text-on-surface'
+              }`}
+              autoFocus
+            />
+            {showHint && (
+              <div className="mt-sm text-center font-sans text-[12px] leading-[16px] font-semibold tracking-[0.08em] text-on-surface-variant/60">
+                Press Enter to submit
+              </div>
+            )}
+          </form>
+        </div>
       </div>
     </AppLayout>
   );

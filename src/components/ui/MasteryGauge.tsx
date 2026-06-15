@@ -8,7 +8,7 @@ interface MasteryGaugeProps {
 
 export const MasteryGauge: React.FC<MasteryGaugeProps> = ({ 
   percentage, 
-  size = 160, 
+  size = 200, 
   strokeWidth = 4 
 }) => {
   const radius = (size - strokeWidth) / 2;
