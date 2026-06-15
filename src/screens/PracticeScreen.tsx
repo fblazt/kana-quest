@@ -101,7 +101,6 @@ export const PracticeScreen: React.FC = () => {
   };
 
   const currentKana = queue[currentIndex];
-  const remaining = queue.length - currentIndex;
   const total = queue.length + score; // approximate for now
   const progressPercent = total > 0 ? (score / total) * 100 : 0;
   const elapsed = currentMode === 'speed' ? Math.floor(totalTime / 1000) : 0;
