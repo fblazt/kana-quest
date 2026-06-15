@@ -22,8 +22,7 @@ export const SessionSummary: React.FC = () => {
       <AppLayout hideBottomNav>
         <div className="flex flex-col items-center justify-center flex-1 px-lg text-center">
           <p className="font-sans text-on-surface-variant mb-4">No session data found.</p>
-          <button
-            onClick={() => navigate('/dashboard')}
+          <button type="button"            onClick={() => navigate('/dashboard')}
             className="w-full bg-primary text-on-primary font-sans text-[18px] leading-[28px] rounded-xl py-md px-lg shadow-[0_10px_40px_-10px_rgba(24,36,66,0.04)] hover:opacity-90 transition-all flex justify-center items-center gap-sm"
           >
             Go Home
@@ -137,19 +136,19 @@ export const SessionSummary: React.FC = () => {
         {/* Actions */}
         <section className="flex flex-col gap-md mt-xl w-full">
           {mistakesList.length > 0 && (
-            <button className="w-full bg-surface border border-outline-variant text-on-surface font-sans text-[18px] leading-[28px] rounded-xl py-md px-lg shadow-[0_10px_40px_-10px_rgba(24,36,66,0.04)] hover:bg-surface-variant transition-colors flex justify-center items-center gap-sm">
+            <button type="button"className="w-full bg-surface border border-outline-variant text-on-surface font-sans text-[18px] leading-[28px] rounded-xl py-md px-lg shadow-[0_10px_40px_-10px_rgba(24,36,66,0.04)] hover:bg-surface-variant transition-colors flex justify-center items-center gap-sm">
               <span className="material-symbols-outlined text-[20px]">school</span>
               Review Mistakes
             </button>
           )}
           <Link to="/dashboard" className="w-full">
-            <button className="w-full bg-primary text-on-primary font-sans text-[18px] leading-[28px] rounded-xl py-md px-lg shadow-[0_10px_40px_-10px_rgba(24,36,66,0.04)] hover:opacity-90 active:scale-[0.98] transition-all flex justify-center items-center gap-sm">
+            <button type="button"className="w-full bg-primary text-on-primary font-sans text-[18px] leading-[28px] rounded-xl py-md px-lg shadow-[0_10px_40px_-10px_rgba(24,36,66,0.04)] hover:opacity-90 active:scale-[0.98] transition-all flex justify-center items-center gap-sm">
               <span className="material-symbols-outlined text-[20px]">home</span>
               Return to Dashboard
             </button>
           </Link>
           <Link to="/practice/mode" className="w-full">
-            <button className="w-full text-primary font-sans text-[18px] leading-[28px] py-md px-lg hover:bg-primary-container/20 rounded-xl transition-colors flex justify-center items-center gap-sm">
+            <button type="button"className="w-full text-primary font-sans text-[18px] leading-[28px] py-md px-lg hover:bg-primary-container/20 rounded-xl transition-colors flex justify-center items-center gap-sm">
               Continue Practice
               <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
             </button>

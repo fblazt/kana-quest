@@ -36,20 +36,20 @@ export const Dashboard: React.FC = () => {
         {/* Actions Section */}
         <section className="flex flex-col gap-md mt-sm w-full">
           <Link to="/practice/mode" className="w-full">
-            <button className="w-full bg-primary text-on-primary font-sans text-[18px] leading-[28px] rounded-xl py-md px-lg shadow-[0_10px_40px_-10px_rgba(24,36,66,0.04)] hover:opacity-90 active:scale-[0.98] transition-all flex justify-center items-center gap-sm">
+            <button type="button"className="w-full bg-primary text-on-primary font-sans text-[18px] leading-[28px] rounded-xl py-md px-lg shadow-[0_10px_40px_-10px_rgba(24,36,66,0.04)] hover:opacity-90 active:scale-[0.98] transition-all flex justify-center items-center gap-sm">
               Continue Practice
               <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
             </button>
           </Link>
           <div className="grid grid-cols-2 gap-md w-full">
             <Link to="/practice?mode=speed" className="w-full">
-              <button className="w-full border border-outline-variant text-on-surface font-sans text-[16px] leading-[24px] rounded-xl py-sm px-md flex items-center justify-center gap-xs hover:bg-surface-variant/50 transition-colors">
+              <button type="button"className="w-full border border-outline-variant text-on-surface font-sans text-[16px] leading-[24px] rounded-xl py-sm px-md flex items-center justify-center gap-xs hover:bg-surface-variant/50 transition-colors">
                 <span className="material-symbols-outlined text-[18px]">bolt</span>
                 Speed
               </button>
             </Link>
             <Link to="/practice?mode=survival" className="w-full">
-              <button className="w-full border border-outline-variant text-on-surface font-sans text-[16px] leading-[24px] rounded-xl py-sm px-md flex items-center justify-center gap-xs hover:bg-surface-variant/50 transition-colors">
+              <button type="button"className="w-full border border-outline-variant text-on-surface font-sans text-[16px] leading-[24px] rounded-xl py-sm px-md flex items-center justify-center gap-xs hover:bg-surface-variant/50 transition-colors">
                 <span className="material-symbols-outlined text-[18px]">favorite</span>
                 Survival
               </button>

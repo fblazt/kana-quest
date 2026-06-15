@@ -8,8 +8,7 @@ interface ToggleProps {
 
 const Toggle: React.FC<ToggleProps> = ({ checked, onChange }) => {
   return (
-    <button
-      onClick={() => onChange(!checked)}
+    <button type="button" aria-label="Toggle setting" aria-checked={checked} role="switch" onClick={() => onChange(!checked)}
       className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${
         checked ? 'bg-primary' : 'bg-outline-variant/40'
       }`}

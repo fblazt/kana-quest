@@ -45,9 +45,7 @@ export const seedDatabaseIfEmpty = async () => {
   const count = await db.count('kana_deck');
   if (count === 0) {
     const tx = db.transaction('kana_deck', 'readwrite');
-    for (const kana of kanaSeed) {
-      await tx.store.add(kana);
-    }
+    await Promise.all(kanaSeed.map(kana => tx.store.add(kana)));
     await tx.done;
   }
   

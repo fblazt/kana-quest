@@ -80,17 +80,21 @@ export const usePracticeStore = create<PracticeState>((set, get) => ({
     let queue: Kana[] = [];
     
     if (mode === 'speed' || mode === 'survival') {
-      const due = await getReviewQueue(db, type);
-      const weak = await getWeakKana(db, type);
-      const fresh = await getNewKana(db, type);
+      const [due, weak, fresh] = await Promise.all([
+        getReviewQueue(db, type),
+        getWeakKana(db, type),
+        getNewKana(db, type)
+      ]);
       queue = shuffle([...due, ...weak, ...fresh]).slice(0, 40);
     } else {
       const due = await getReviewQueue(db, type);
       if (due.length > 0) {
         queue = shuffle(due);
       } else {
-        const weak = await getWeakKana(db, type);
-        const fresh = await getNewKana(db, type);
+        const [weak, fresh] = await Promise.all([
+          getWeakKana(db, type),
+          getNewKana(db, type)
+        ]);
         queue = shuffle([...weak, ...fresh]).slice(0, 20);
       }
     }

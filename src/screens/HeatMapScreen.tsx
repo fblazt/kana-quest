@@ -58,8 +58,7 @@ export const HeatMapScreen: React.FC = () => {
 
         {/* Tab Switcher */}
         <div className="flex bg-surface-container-lowest border border-outline-variant/40 rounded-xl p-1 mb-6">
-          <button
-            onClick={() => setActiveTab('hiragana')}
+          <button type="button"            onClick={() => setActiveTab('hiragana')}
             className={`flex-1 py-2 rounded-lg font-sans text-sm font-medium transition-colors ${
               activeTab === 'hiragana'
                 ? 'bg-primary text-on-primary'
@@ -68,8 +67,7 @@ export const HeatMapScreen: React.FC = () => {
           >
             Hiragana
           </button>
-          <button
-            onClick={() => setActiveTab('katakana')}
+          <button type="button"            onClick={() => setActiveTab('katakana')}
             className={`flex-1 py-2 rounded-lg font-sans text-sm font-medium transition-colors ${
               activeTab === 'katakana'
                 ? 'bg-primary text-on-primary'

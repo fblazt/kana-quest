@@ -11,7 +11,7 @@ import { HeatMapScreen } from './screens/HeatMapScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
 
 function RouteWrapper({ children }: { children: React.ReactNode }) {
-  const location = useLocation();
+  const { pathname } = useLocation();
 
   useEffect(() => {
     const el = document.getElementById('route-content');
@@ -20,7 +20,7 @@ function RouteWrapper({ children }: { children: React.ReactNode }) {
       void el.offsetWidth;
       el.classList.add('route-enter');
     }
-  }, [location.pathname]);
+  }, [pathname]);
 
   return <div id="route-content" className="route-enter flex flex-col flex-1 h-full w-full">{children}</div>;
 }

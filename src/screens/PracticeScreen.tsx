@@ -112,8 +112,7 @@ export const PracticeScreen: React.FC = () => {
       <AppLayout hideBottomNav>
         <div className="flex flex-col items-center justify-center flex-1 px-lg">
           <p className="font-sans text-error mb-4">{error}</p>
-          <button
-            onClick={() => navigate('/dashboard')}
+          <button type="button"            onClick={() => navigate('/dashboard')}
             className="px-4 py-2 bg-primary text-on-primary rounded-lg"
           >
             Go Home
@@ -138,8 +137,7 @@ export const PracticeScreen: React.FC = () => {
       hideBottomNav
       header={
         <header className="px-gutter py-md flex items-center justify-between border-b border-outline-variant bg-surface w-full max-w-container-max sticky top-0 z-10">
-          <button
-            onClick={() => {
+          <button type="button"            onClick={() => {
               endSession();
               navigate('/dashboard');
             }}
@@ -229,6 +227,7 @@ export const PracticeScreen: React.FC = () => {
               ref={inputRef}
               type="text"
               id="romaji-input"
+              aria-label="Romaji input"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -245,7 +244,6 @@ export const PracticeScreen: React.FC = () => {
                   ? 'border-error text-error'
                   : 'border-outline focus:border-primary text-on-surface'
               }`}
-              autoFocus
             />
             {showHint && (
               <div className="mt-sm text-center font-sans text-[12px] leading-[16px] font-semibold tracking-[0.08em] text-on-surface-variant/60">

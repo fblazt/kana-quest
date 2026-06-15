@@ -31,15 +31,16 @@ function calculateGroupMastery(characters: string[], allKana: Kana[]): number {
   return Math.round((mastered / groupKana.length) * 100);
 }
 
+const BADGE_COLORS: Record<string, string> = {
+  Easy: 'bg-primary/10 text-primary',
+  Medium: 'bg-tertiary/10 text-tertiary',
+  Hard: 'bg-secondary/10 text-secondary',
+  Expert: 'bg-error/10 text-error',
+};
+
 function DifficultyBadge({ difficulty }: { difficulty: string }) {
-  const colors: Record<string, string> = {
-    Easy: 'bg-primary/10 text-primary',
-    Medium: 'bg-tertiary/10 text-tertiary',
-    Hard: 'bg-secondary/10 text-secondary',
-    Expert: 'bg-error/10 text-error',
-  };
   return (
-    <span className={`px-2 py-0.5 rounded-full font-sans text-[10px] font-semibold ${colors[difficulty] || ''}`}>
+    <span className={`px-2 py-0.5 rounded-full font-sans text-[10px] font-semibold ${BADGE_COLORS[difficulty] || ''}`}>
       {difficulty}
     </span>
   );

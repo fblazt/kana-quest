@@ -9,6 +9,7 @@ export const Button: React.FC<ButtonProps> = ({
   variant = 'primary', 
   fullWidth = false, 
   className = '', 
+  type = 'button',
   children, 
   ...props 
 }) => {
@@ -29,7 +30,7 @@ export const Button: React.FC<ButtonProps> = ({
   }
 
   return (
-    <button 
+    <button type={type}
       className={`${baseStyles} ${widthStyles} ${variantStyles} ${className}`}
       {...props}
     >

@@ -64,17 +64,17 @@ export function useDashboardData(): DashboardData {
       const katakana = allKana.filter((k) => k.type === 'katakana');
 
       if (!cancelled) {
-        setData({
+        setData((prev) => ({
           allKana,
           hiragana,
           katakana,
-          userStats: userStats || data.userStats,
+          userStats: userStats || prev.userStats,
           dueCount: due.length,
           hiraganaMastery: calculateMastery(hiragana),
           katakanaMastery: calculateMastery(katakana),
           overallMastery: calculateMastery(allKana),
           loading: false,
-        });
+        }));
       }
 
       db.close();
