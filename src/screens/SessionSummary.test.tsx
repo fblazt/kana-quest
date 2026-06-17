@@ -4,14 +4,12 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { SessionSummary } from './SessionSummary';
 
 const mockSessionState = {
-  totalAnswered: 20,
-  totalCorrect: 19,
+  correct: 19,
+  incorrect: 1,
   totalTime: 24000,
-  maxStreak: 15,
-  masteredKana: ['h-ke', 'h-ko'],
-  confusedPairs: [{ shown: 'h-a', answered: 'o' }],
-  mode: 'practice',
   score: 19,
+  streak: 15,
+  mistakes: {},
 };
 
 describe('SessionSummary', () => {
@@ -23,14 +21,14 @@ describe('SessionSummary', () => {
         </Routes>
       </MemoryRouter>
     );
-    expect(screen.getByText('Session Complete')).toBeInTheDocument();
+    expect(screen.getByText(/SESSION COMPLETE/i)).toBeInTheDocument();
     expect(screen.getByText('Well done.')).toBeInTheDocument();
     expect(screen.getByText('95%')).toBeInTheDocument();
     expect(screen.getByText('1.2s')).toBeInTheDocument();
     expect(screen.getByText('15')).toBeInTheDocument();
   });
 
-  it('renders continue practice link', () => {
+  it('renders links correctly', () => {
     render(
       <MemoryRouter initialEntries={[{ pathname: '/session-summary', state: mockSessionState }]}>
         <Routes>
@@ -38,11 +36,15 @@ describe('SessionSummary', () => {
         </Routes>
       </MemoryRouter>
     );
-    const link = screen.getByText('Continue Practice').closest('a');
-    expect(link).toHaveAttribute('href', '/dashboard');
+    
+    const dashboardLink = screen.getByText('Return to Dashboard').closest('a');
+    expect(dashboardLink).toHaveAttribute('href', '/dashboard');
+
+    const continueLink = screen.getByText('Continue Practice').closest('a');
+    expect(continueLink).toHaveAttribute('href', '/practice/mode');
   });
 
-  it('renders default state when no state provided', () => {
+  it('renders fallback state when no state provided', () => {
     render(
       <MemoryRouter initialEntries={['/session-summary']}>
         <Routes>
@@ -50,8 +52,7 @@ describe('SessionSummary', () => {
         </Routes>
       </MemoryRouter>
     );
-    expect(screen.getByText('0%')).toBeInTheDocument();
-    expect(screen.getByText('0.0s')).toBeInTheDocument();
-    expect(screen.getByText('0')).toBeInTheDocument();
+    expect(screen.getByText('No session data found.')).toBeInTheDocument();
+    expect(screen.getByText('Go Home')).toBeInTheDocument();
   });
 });

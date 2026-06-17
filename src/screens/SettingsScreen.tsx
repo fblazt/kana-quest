@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { AppLayout } from '../components/layout/AppLayout';
+import { useAppStore } from '../store/useStore';
 
 interface ToggleProps {
   checked: boolean;
@@ -42,7 +43,7 @@ const SettingsRow: React.FC<SettingsRowProps> = ({ icon, label, action, danger =
 };
 
 export const SettingsScreen: React.FC = () => {
-  const [darkTheme, setDarkTheme] = useState(false);
+  const { theme, toggleTheme } = useAppStore();
   const [soundEffects, setSoundEffects] = useState(true);
 
   return (
@@ -60,7 +61,7 @@ export const SettingsScreen: React.FC = () => {
             <SettingsRow
               icon="dark_mode"
               label="Dark Theme"
-              action={<Toggle checked={darkTheme} onChange={setDarkTheme} />}
+              action={<Toggle checked={theme === 'dark'} onChange={toggleTheme} />}
             />
             <SettingsRow
               icon="volume_up"
