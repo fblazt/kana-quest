@@ -38,6 +38,8 @@ export const SessionSummary: React.FC = () => {
   const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0;
   const avgResponseTime = total > 0 ? (totalTime / total / 1000).toFixed(1) : '0.0';
   const xpGained = score * 10;
+  const xpTarget = Math.max(100, xpGained);
+  const xpPercent = Math.min(100, Math.round((xpGained / xpTarget) * 100));
   const mistakesList = Object.values(mistakes || {});
 
   return (
@@ -98,10 +100,18 @@ export const SessionSummary: React.FC = () => {
             <span className="font-sans text-[12px] leading-[16px] font-semibold tracking-[0.08em] text-primary uppercase">+{xpGained} XP</span>
           </div>
           <div className="w-full bg-surface-container h-2 rounded-full overflow-hidden mb-sm">
-            <div className="bg-primary h-full w-full rounded-full"></div>
+            <div
+              className="bg-primary h-full rounded-full transition-all duration-700 ease-out"
+              style={{ width: `${xpPercent}%` }}
+              role="progressbar"
+              aria-valuenow={xpPercent}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label="Session mastery progress"
+            />
           </div>
           <div className="flex justify-between text-[12px] leading-[16px] font-sans text-on-surface-variant">
-            <span>{total} questions answered</span>
+            <span>{xpGained} / {xpTarget} XP toward next level</span>
             <span>{correct} correct</span>
           </div>
         </section>

@@ -138,6 +138,12 @@
     box-shadow: 0 0 40px rgba(0, 0, 0, 0.05);
     background-color: var(--color-surface);
   }
+
+  *:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
 }
 
 /* Splash Screen Animations */
@@ -189,6 +195,20 @@
 
 .route-enter {
   animation: route-fade-in 0.2s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .route-enter,
+  [style*="splash-fade-in-up"],
+  [style*="splash-pulse-ring"],
+  [style*="splash-dot-blink"],
+  [style*="splash-loading-line"] {
+    animation: none !important;
+  }
+  .animate-correct-pulse,
+  .animate-incorrect-shake {
+    animation: none !important;
+  }
 }
 @layer base {
   .dark {

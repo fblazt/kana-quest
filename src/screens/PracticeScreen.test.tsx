@@ -6,6 +6,6 @@ import { PracticeScreen } from './PracticeScreen';
 describe('PracticeScreen', () => {
   it('renders loading state initially', () => {
     render(<MemoryRouter><PracticeScreen /></MemoryRouter>);
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    expect(screen.getByText(/Preparing your session/i)).toBeInTheDocument();
   });
 });

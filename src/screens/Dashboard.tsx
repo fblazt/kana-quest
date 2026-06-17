@@ -11,7 +11,7 @@ export const Dashboard: React.FC = () => {
     return (
       <AppLayout>
         <div className="flex items-center justify-center flex-1">
-          <p className="font-sans text-on-surface-variant">Loading...</p>
+          <p className="font-sans text-on-surface-variant">Loading your dashboard…</p>
         </div>
       </AppLayout>
     );
@@ -43,13 +43,13 @@ export const Dashboard: React.FC = () => {
           </Link>
           <div className="grid grid-cols-2 gap-md w-full">
             <Link to="/practice?mode=speed" className="w-full">
-              <button type="button"className="w-full border border-outline-variant text-on-surface font-sans text-[16px] leading-[24px] rounded-xl py-sm px-md flex items-center justify-center gap-xs hover:bg-surface-variant/50 transition-colors">
+              <button type="button"className="w-full min-h-[44px] border border-outline-variant text-on-surface font-sans text-[16px] leading-[24px] rounded-xl py-sm px-md flex items-center justify-center gap-xs hover:bg-surface-variant/50 active:scale-[0.98] transition-all">
                 <span className="material-symbols-outlined text-[18px]">bolt</span>
                 Speed
               </button>
             </Link>
             <Link to="/practice?mode=survival" className="w-full">
-              <button type="button"className="w-full border border-outline-variant text-on-surface font-sans text-[16px] leading-[24px] rounded-xl py-sm px-md flex items-center justify-center gap-xs hover:bg-surface-variant/50 transition-colors">
+              <button type="button"className="w-full min-h-[44px] border border-outline-variant text-on-surface font-sans text-[16px] leading-[24px] rounded-xl py-sm px-md flex items-center justify-center gap-xs hover:bg-surface-variant/50 active:scale-[0.98] transition-all">
                 <span className="material-symbols-outlined text-[18px]">favorite</span>
                 Survival
               </button>

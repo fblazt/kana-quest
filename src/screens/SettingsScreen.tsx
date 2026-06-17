@@ -1,24 +1,34 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { AppLayout } from '../components/layout/AppLayout';
 import { useAppStore } from '../store/useStore';
 
 interface ToggleProps {
   checked: boolean;
-  onChange: (checked: boolean) => void;
+  onChange: () => void;
+  label: string;
 }
 
-const Toggle: React.FC<ToggleProps> = ({ checked, onChange }) => {
+const Toggle: React.FC<ToggleProps> = ({ checked, onChange, label }) => {
   return (
-    <button type="button" aria-label="Toggle setting" aria-checked={checked} role="switch" onClick={() => onChange(!checked)}
-      className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${
-        checked ? 'bg-primary' : 'bg-outline-variant/40'
-      }`}
+    <button
+      type="button"
+      aria-label={label}
+      aria-checked={checked}
+      role="switch"
+      onClick={onChange}
+      className="relative inline-flex items-center justify-center min-h-[44px] min-w-[44px] p-0 bg-transparent border-0 cursor-pointer"
     >
       <span
-        className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${
-          checked ? 'translate-x-5' : ''
+        className={`relative block w-11 h-6 rounded-full transition-colors duration-200 overflow-hidden ${
+          checked ? 'bg-primary' : 'bg-outline-variant/40'
         }`}
-      />
+      >
+        <span
+          className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${
+            checked ? 'translate-x-5' : ''
+          }`}
+        />
+      </span>
     </button>
   );
 };
@@ -28,11 +38,20 @@ interface SettingsRowProps {
   label: string;
   action?: React.ReactNode;
   danger?: boolean;
+  onClick?: () => void;
 }
 
-const SettingsRow: React.FC<SettingsRowProps> = ({ icon, label, action, danger = false }) => {
+const SettingsRow: React.FC<SettingsRowProps> = ({ icon, label, action, danger = false, onClick }) => {
   return (
-    <div className="flex items-center justify-between py-md border-b border-outline-variant/20 last:border-b-0">
+    <div
+      className={`flex items-center justify-between py-md border-b border-outline-variant/20 last:border-b-0 ${
+        onClick ? 'cursor-pointer hover:bg-surface-variant/40 transition-colors -mx-md px-md' : ''
+      }`}
+      onClick={onClick}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } } : undefined}
+    >
       <div className="flex items-center gap-md">
         <span className="material-symbols-outlined text-on-surface-variant text-[20px]">{icon}</span>
         <span className={`font-sans text-[16px] leading-[24px] ${danger ? 'text-error font-medium' : 'text-on-surface'}`}>{label}</span>
@@ -43,8 +62,18 @@ const SettingsRow: React.FC<SettingsRowProps> = ({ icon, label, action, danger =
 };
 
 export const SettingsScreen: React.FC = () => {
-  const { theme, toggleTheme } = useAppStore();
-  const [soundEffects, setSoundEffects] = useState(true);
+  const { theme, toggleTheme, soundEffects, toggleSoundEffects } = useAppStore();
+
+  const handleReset = () => {
+    const confirmed = window.confirm('Reset all progress? This cannot be undone.');
+    if (!confirmed) return;
+    try {
+      localStorage.removeItem('kana-quest-progress');
+      window.location.reload();
+    } catch (err) {
+      console.error('Failed to reset progress:', err);
+    }
+  };
 
   return (
     <AppLayout
@@ -61,12 +90,12 @@ export const SettingsScreen: React.FC = () => {
             <SettingsRow
               icon="dark_mode"
               label="Dark Theme"
-              action={<Toggle checked={theme === 'dark'} onChange={toggleTheme} />}
+              action={<Toggle checked={theme === 'dark'} onChange={toggleTheme} label="Dark theme" />}
             />
             <SettingsRow
               icon="volume_up"
               label="Sound Effects"
-              action={<Toggle checked={soundEffects} onChange={setSoundEffects} />}
+              action={<Toggle checked={soundEffects} onChange={toggleSoundEffects} label="Sound effects" />}
             />
             <SettingsRow
               icon="notifications"
@@ -96,6 +125,7 @@ export const SettingsScreen: React.FC = () => {
               icon="delete"
               label="Reset Progress"
               danger
+              onClick={handleReset}
             />
           </div>
         </section>

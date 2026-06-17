@@ -239,9 +239,9 @@ export const usePracticeStore = create<PracticeState>((set, get) => ({
     const elapsed = Date.now() - state.startTime;
     if (elapsed >= SPEED_DURATION) {
       set({ isFinished: true, totalTime: SPEED_DURATION });
-    } else {
-      set({ totalTime: elapsed });
     }
+    // Note: totalTime is no longer updated every tick; the screen derives
+    // the displayed countdown directly from startTime via Date.now().
   },
 
   endSession: () => {

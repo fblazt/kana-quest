@@ -11,7 +11,7 @@ const tabs = [
 
 export const BottomNav: React.FC = () => {
   return (
-    <nav className="fixed bottom-0 w-full max-w-container-max z-50 bg-surface border-t border-surface-variant shadow-sm flex justify-around items-center px-md py-sm">
+    <nav className="fixed bottom-0 w-full max-w-container-max z-50 bg-surface border-t border-surface-variant shadow-sm flex justify-around items-center px-md pt-sm pb-[max(8px,env(safe-area-inset-bottom))]">
       {tabs.map(({ to, label, icon }) => (
         <NavLink
           key={to}

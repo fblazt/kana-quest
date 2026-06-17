@@ -7,18 +7,21 @@ interface AppState {
   userStats: UserStats | null;
   activeKana: Kana | null;
   theme: 'light' | 'dark';
-  
+  soundEffects: boolean;
+
   // Actions
   initializeApp: () => Promise<void>;
   toggleTheme: () => void;
+  toggleSoundEffects: () => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
   isReady: false,
   userStats: null,
   activeKana: null,
-  theme: (localStorage.getItem('theme') as 'light' | 'dark') || 
+  theme: (localStorage.getItem('theme') as 'light' | 'dark') ||
          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'),
+  soundEffects: localStorage.getItem('soundEffects') !== 'false',
 
   toggleTheme: () => set((state) => {
     const newTheme = state.theme === 'light' ? 'dark' : 'light';
@@ -31,11 +34,17 @@ export const useAppStore = create<AppState>((set) => ({
     return { theme: newTheme };
   }),
 
+  toggleSoundEffects: () => set((state) => {
+    const next = !state.soundEffects;
+    localStorage.setItem('soundEffects', String(next));
+    return { soundEffects: next };
+  }),
+
   initializeApp: async () => {
     await seedDatabaseIfEmpty();
     const db = await initDB();
     const stats = await db.get('user_progress', 'main');
-    
+
     // Apply initial theme
     const theme = useAppStore.getState().theme;
     if (theme === 'dark') {

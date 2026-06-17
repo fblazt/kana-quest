@@ -28,12 +28,22 @@ export const PracticeScreen: React.FC = () => {
     feedback,
     sessionStats,
     totalTime,
+    startTime,
     startSession,
     submitAnswer,
     nextKana,
     tickTimer,
     endSession,
   } = usePracticeStore();
+
+  // Local 1Hz clock so the speed-mode countdown doesn't push Zustand every 100ms
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    if (currentMode !== 'speed' || isFinished) return;
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [currentMode, isFinished]);
+  const liveElapsed = currentMode === 'speed' && startTime > 0 ? now - startTime : 0;
 
   useEffect(() => {
     const init = async () => {
@@ -49,7 +59,7 @@ export const PracticeScreen: React.FC = () => {
 
   useEffect(() => {
     if (currentMode === 'speed' && !isFinished) {
-      const interval = setInterval(tickTimer, 100);
+      const interval = setInterval(tickTimer, 1000);
       return () => clearInterval(interval);
     }
   }, [currentMode, isFinished, tickTimer]);
@@ -66,6 +76,37 @@ export const PracticeScreen: React.FC = () => {
       });
     }
   }, [isFinished, navigate, sessionStats, totalTime, score]);
+
+  // Keyboard-aware padding: shrink the bottom inset when the soft keyboard is open
+  useEffect(() => {
+    const root = document.documentElement;
+    const vv = window.visualViewport;
+    const setKeyboardInset = () => {
+      if (!vv) {
+        root.style.setProperty('--keyboard-inset', '0px');
+        return;
+      }
+      const keyboardHeight = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+      root.style.setProperty('--keyboard-inset', `${keyboardHeight}px`);
+
+      // Keep the input + kana card visible when the keyboard opens
+      if (keyboardHeight > 0) {
+        inputRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      }
+    };
+    setKeyboardInset();
+    if (vv) {
+      vv.addEventListener('resize', setKeyboardInset);
+      vv.addEventListener('scroll', setKeyboardInset);
+    }
+    return () => {
+      if (vv) {
+        vv.removeEventListener('resize', setKeyboardInset);
+        vv.removeEventListener('scroll', setKeyboardInset);
+      }
+      root.style.setProperty('--keyboard-inset', '0px');
+    };
+  }, []);
 
   useEffect(() => {
     if (feedback && inputRef.current) {
@@ -103,7 +144,7 @@ export const PracticeScreen: React.FC = () => {
   const currentKana = queue[currentIndex];
   const total = queue.length + score; // approximate for now
   const progressPercent = total > 0 ? (score / total) * 100 : 0;
-  const elapsed = currentMode === 'speed' ? Math.floor(totalTime / 1000) : 0;
+  const elapsed = currentMode === 'speed' ? Math.floor(liveElapsed / 1000) : 0;
   const timeLeft = currentMode === 'speed' ? Math.max(0, 60 - elapsed) : 0;
 
   if (error) {
@@ -125,7 +166,7 @@ export const PracticeScreen: React.FC = () => {
     return (
       <AppLayout hideBottomNav>
         <div className="flex flex-col items-center justify-center flex-1 px-lg">
-          <p className="font-sans text-on-surface-variant">Loading...</p>
+          <p className="font-sans text-on-surface-variant">Preparing your session…</p>
         </div>
       </AppLayout>
     );
@@ -182,7 +223,35 @@ export const PracticeScreen: React.FC = () => {
         </header>
       }
     >
-      <div className="flex-1 flex flex-col items-center justify-center px-gutter w-full pb-xxl">
+      <div
+        className="flex-1 flex flex-col items-center justify-center px-gutter w-full"
+        style={{ paddingBottom: 'calc(var(--spacing-xxl) + var(--keyboard-inset, 0px) + env(safe-area-inset-bottom, 0px))' }}
+      >
+        {/* Screen-reader announcements: kana change + feedback state */}
+        <div
+          aria-live="polite"
+          aria-atomic="true"
+          style={{
+            position: 'absolute',
+            width: '1px',
+            height: '1px',
+            padding: 0,
+            margin: '-1px',
+            overflow: 'hidden',
+            clip: 'rect(0,0,0,0)',
+            whiteSpace: 'nowrap',
+            border: 0,
+          }}
+        >
+          {currentKana
+            ? `Kana question ${currentIndex + 1} of ${queue.length}.` +
+              (feedback === 'correct'
+                ? ' Correct.'
+                : feedback === 'incorrect'
+                ? ` Incorrect. The answer was ${currentKana.romaji}.`
+                : '')
+            : ''}
+        </div>
         {/* Progress Counter */}
         <div className="mb-xl font-sans text-[12px] leading-[16px] font-semibold text-on-surface-variant uppercase tracking-[0.08em]">
           {score} / {total}

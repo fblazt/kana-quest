@@ -100,9 +100,9 @@ export const HeatMapScreen: React.FC = () => {
 
         {/* Heat Map Grid */}
         {loading ? (
-          <p className="font-sans text-on-surface-variant text-center">Loading...</p>
+          <p className="font-sans text-on-surface-variant text-center">Loading the deck…</p>
         ) : (
-          <div className="grid grid-cols-5 gap-2">
+          <div className="grid grid-cols-4 min-[360px]:grid-cols-5 gap-2">
             {data.map((kana) => {
               const mastery = calculateMastery(kana);
               return (

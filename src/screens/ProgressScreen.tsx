@@ -32,7 +32,7 @@ export const ProgressScreen: React.FC = () => {
   const accuracy = userStats?.averageAccuracy || 0;
   const streak = userStats?.currentStreak || 0;
 
-  const totalPracticeMinutes = Math.round(totalReviews * 8 / 60);
+  const totalPracticeMinutes = Math.round((totalReviews * 8) / 60);
   const hours = Math.floor(totalPracticeMinutes / 60);
   const mins = totalPracticeMinutes % 60;
 
@@ -48,7 +48,7 @@ export const ProgressScreen: React.FC = () => {
     return (
       <AppLayout>
         <div className="flex items-center justify-center flex-1">
-          <p className="font-sans text-on-surface-variant">Loading...</p>
+          <p className="font-sans text-on-surface-variant">Reading your progress…</p>
         </div>
       </AppLayout>
     );
@@ -56,44 +56,84 @@ export const ProgressScreen: React.FC = () => {
 
   return (
     <AppLayout>
-      <div className="px-6 pt-4 pb-6">
-        <h2 className="font-serif text-2xl font-medium text-primary text-center mb-6">Progress</h2>
+      <div className="px-gutter pt-md pb-xxl flex flex-col gap-xl">
+        {/* Page heading */}
+        <header className="text-center">
+          <h2 className="font-serif text-2xl font-medium text-primary">Progress</h2>
+          <p className="font-sans text-[13px] leading-[18px] text-on-surface-variant mt-xs">
+            Your kana, over time.
+          </p>
+        </header>
 
-        {/* Stat Cards */}
-        <div className="grid grid-cols-2 gap-3 mb-6">
-          <div className="p-4 bg-surface-container-lowest border border-outline-variant/40 rounded-xl">
-            <div className="flex items-center gap-2 mb-1">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-primary"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-              <span className="font-sans text-[10px] font-semibold tracking-wider uppercase text-on-surface-variant">Total Reviews</span>
-            </div>
-            <p className="font-sans text-2xl font-bold text-on-surface mb-1">{totalReviews.toLocaleString()}</p>
-            <span className="font-sans text-xs text-primary font-semibold">{masteredCount} kana mastered</span>
-          </div>
-          <div className="p-4 bg-surface-container-lowest border border-outline-variant/40 rounded-xl">
-            <div className="flex items-center gap-2 mb-1">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-primary"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
-              <span className="font-sans text-[10px] font-semibold tracking-wider uppercase text-on-surface-variant">Time Practiced</span>
-            </div>
-            <p className="font-sans text-2xl font-bold text-on-surface mb-1">{hours}h {mins}m</p>
-            <span className="font-sans text-xs text-primary font-semibold">{totalReviews} total reviews</span>
-          </div>
-        </div>
+        {/* Hero: Overall Mastery */}
+        <section className="text-center" aria-labelledby="hero-mastery-label">
+          <p
+            id="hero-mastery-label"
+            className="font-sans text-[12px] leading-[16px] font-semibold tracking-[0.08em] text-on-surface-variant uppercase mb-sm"
+          >
+            Overall Mastery
+          </p>
+          <p className="font-serif text-[64px] leading-[72px] font-medium text-primary tabular-nums">
+            {overallMastery}
+            <span className="text-[40px] leading-[48px] text-on-surface-variant align-top ml-1">%</span>
+          </p>
+          <p className="font-sans text-[14px] leading-[20px] text-on-surface-variant">
+            {masteredCount} of {totalKana} kana mastered
+          </p>
+        </section>
 
-        {/* Mastery Growth Chart */}
-        <div className="bg-surface-container-lowest border border-outline-variant/40 rounded-xl p-4 mb-6">
-          <h3 className="font-sans text-sm font-semibold text-on-surface mb-4">Mastery Growth</h3>
+        {/* Supporting metrics: 2-up grid */}
+        <section
+          className="grid grid-cols-2 gap-md"
+          aria-label="Practice totals"
+        >
+          <div className="bg-surface-container-lowest border border-outline-variant/40 rounded-xl px-md py-sm">
+            <div className="flex items-center gap-xs mb-xs">
+              <span className="material-symbols-outlined text-on-surface-variant text-[16px]">article</span>
+              <span className="font-sans text-[10px] font-semibold tracking-[0.08em] uppercase text-on-surface-variant">
+                Reviews
+              </span>
+            </div>
+            <p className="font-serif text-[24px] leading-[32px] font-medium text-on-surface tabular-nums">
+              {totalReviews.toLocaleString()}
+            </p>
+          </div>
+          <div className="bg-surface-container-lowest border border-outline-variant/40 rounded-xl px-md py-sm">
+            <div className="flex items-center gap-xs mb-xs">
+              <span className="material-symbols-outlined text-on-surface-variant text-[16px]">schedule</span>
+              <span className="font-sans text-[10px] font-semibold tracking-[0.08em] uppercase text-on-surface-variant">
+                Practiced
+              </span>
+            </div>
+            <p className="font-serif text-[24px] leading-[32px] font-medium text-on-surface tabular-nums">
+              {hours}h {mins}m
+            </p>
+          </div>
+        </section>
+
+        {/* Mastery Growth */}
+        <section
+          className="bg-surface-container-lowest border border-outline-variant/40 rounded-xl p-md"
+          aria-labelledby="growth-label"
+        >
+          <h3
+            id="growth-label"
+            className="font-sans text-[12px] font-semibold tracking-[0.08em] uppercase text-on-surface-variant mb-md"
+          >
+            Mastery Growth
+          </h3>
           <div className="relative h-32">
             <svg viewBox="0 0 300 120" className="w-full h-full" preserveAspectRatio="none">
               <text x="0" y="15" className="fill-on-surface-variant text-[10px] font-sans">100</text>
               <text x="0" y="45" className="fill-on-surface-variant text-[10px] font-sans">75</text>
               <text x="0" y="75" className="fill-on-surface-variant text-[10px] font-sans">50</text>
               <text x="0" y="105" className="fill-on-surface-variant text-[10px] font-sans">25</text>
-              
+
               <line x1="30" y1="10" x2="300" y2="10" stroke="currentColor" strokeWidth="0.5" className="text-outline-variant/20" />
               <line x1="30" y1="40" x2="300" y2="40" stroke="currentColor" strokeWidth="0.5" className="text-outline-variant/20" />
               <line x1="30" y1="70" x2="300" y2="70" stroke="currentColor" strokeWidth="0.5" className="text-outline-variant/20" />
               <line x1="30" y1="100" x2="300" y2="100" stroke="currentColor" strokeWidth="0.5" className="text-outline-variant/20" />
-              
+
               <polyline
                 points="30,100 110,80 190,55 270,30"
                 fill="none"
@@ -107,73 +147,71 @@ export const ProgressScreen: React.FC = () => {
               <circle cx="270" cy={100 - overallMastery * 0.9} r="3" fill="currentColor" className="text-primary" />
             </svg>
           </div>
-          <div className="flex justify-between mt-2 px-1">
+          <div className="flex justify-between mt-sm px-1">
             <span className="font-sans text-[10px] text-on-surface-variant">W1</span>
             <span className="font-sans text-[10px] text-on-surface-variant">W2</span>
             <span className="font-sans text-[10px] text-on-surface-variant">W3</span>
             <span className="font-sans text-[10px] text-on-surface-variant">Now</span>
           </div>
-        </div>
+        </section>
 
-        {/* Daily Streak */}
-        <div className="bg-surface-container-lowest border border-outline-variant/40 rounded-xl p-4 mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-sans text-sm font-semibold text-on-surface">Daily Streak</h3>
-            <div className="flex items-center gap-1.5">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-primary"><path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z"/></svg>
-              <span className="font-sans text-sm font-semibold text-on-surface">{streak} Days</span>
+        {/* Streak + Accuracy side-by-side */}
+        <section
+          className="grid grid-cols-2 gap-md"
+          aria-label="Recent practice"
+        >
+          {/* Daily Streak */}
+          <div className="bg-surface-container-lowest border border-outline-variant/40 rounded-xl p-md">
+            <div className="flex items-center gap-1.5 mb-sm">
+              <span
+                className="material-symbols-outlined text-primary text-[16px]"
+                style={{ fontVariationSettings: "'FILL' 1" }}
+              >
+                local_fire_department
+              </span>
+              <span className="font-sans text-[10px] font-semibold tracking-[0.08em] uppercase text-on-surface-variant">
+                Streak
+              </span>
+            </div>
+            <p className="font-serif text-[24px] leading-[32px] font-medium text-on-surface tabular-nums mb-sm">
+              {streak} <span className="text-[14px] leading-[20px] text-on-surface-variant font-sans">days</span>
+            </p>
+            <div className="grid grid-cols-7 gap-0.5">
+              {calendarDays.flat().map((active, i) => (
+                <div
+                  key={i}
+                  className={`w-full aspect-square rounded-sm ${
+                    active ? 'bg-primary' : 'bg-outline-variant/20'
+                  }`}
+                  aria-label={active ? 'Practiced' : 'Rest day'}
+                />
+              ))}
             </div>
           </div>
-          {/* Calendar Grid */}
-          <div className="grid grid-cols-7 gap-1">
-            {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((day) => (
-              <div key={day} className="text-center font-sans text-[10px] text-on-surface-variant pb-1">{day}</div>
-            ))}
-            {calendarDays.flat().map((active, i) => (
-              <div key={i} className="flex justify-center">
-                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-sans ${
-                  active
-                    ? 'bg-primary text-on-primary'
-                    : 'bg-outline-variant/20 text-on-surface-variant/40'
-                }`}>
-                  {active ? (
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                  ) : (
-                    <span className="text-[9px]">{(i + 1) % 28 || 28}</span>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Accuracy Trend */}
-        <div className="bg-surface-container-lowest border border-outline-variant/40 rounded-xl p-4">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-sans text-sm font-semibold text-on-surface">Accuracy Trend</h3>
-            <span className="font-sans text-sm font-bold text-primary">{accuracy}%</span>
+          {/* Accuracy Trend */}
+          <div className="bg-surface-container-lowest border border-outline-variant/40 rounded-xl p-md">
+            <div className="flex items-center gap-1.5 mb-sm">
+              <span className="material-symbols-outlined text-on-surface-variant text-[16px]">track_changes</span>
+              <span className="font-sans text-[10px] font-semibold tracking-[0.08em] uppercase text-on-surface-variant">
+                Accuracy
+              </span>
+            </div>
+            <p className="font-serif text-[24px] leading-[32px] font-medium text-on-surface tabular-nums mb-sm">
+              {accuracy}<span className="text-[14px] leading-[20px] text-on-surface-variant font-sans">%</span>
+            </p>
+            <div className="flex items-end justify-between h-12 gap-1">
+              {[65, 72, 82, accuracy].map((value, i) => (
+                <div
+                  key={i}
+                  className="flex-1 bg-primary rounded-t"
+                  style={{ height: `${Math.max(4, value)}%` }}
+                  aria-label={i < 3 ? `Week ${i + 1}: ${value}%` : `Now: ${value}%`}
+                />
+              ))}
+            </div>
           </div>
-          <div className="flex items-end justify-between h-24 gap-3">
-            {[65, 72, 82, accuracy].map((value, i) => (
-              <div key={i} className="flex flex-col items-center flex-1">
-                <div 
-                  className="w-full bg-primary/20 rounded-t"
-                  style={{ height: `${value}%` }}
-                >
-                  <div 
-                    className="w-full bg-primary rounded-t"
-                    style={{ height: '100%' }}
-                  />
-                </div>
-                <span className="font-sans text-[9px] text-on-surface-variant mt-1">
-                  {i < 3 ? `W${i + 1}` : 'Now'}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
+        </section>
       </div>
     </AppLayout>
   );

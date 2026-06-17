@@ -89,7 +89,7 @@ export const LearningPath: React.FC = () => {
     return (
       <AppLayout>
         <div className="flex items-center justify-center flex-1">
-          <p className="font-sans text-on-surface-variant">Loading...</p>
+          <p className="font-sans text-on-surface-variant">Loading the path…</p>
         </div>
       </AppLayout>
     );

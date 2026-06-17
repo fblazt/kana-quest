@@ -1,22 +1,26 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '../store/useStore';
+
+const SPLASH_MIN_MS = 600;
 
 export const SplashScreen: React.FC = () => {
   const navigate = useNavigate();
   const { initializeApp, isReady } = useAppStore();
+  const mountTime = useRef(Date.now());
 
   useEffect(() => {
     initializeApp();
   }, [initializeApp]);
 
   useEffect(() => {
-    if (isReady) {
-      const timer = setTimeout(() => {
-        navigate('/dashboard', { replace: true });
-      }, 2500);
-      return () => clearTimeout(timer);
-    }
+    if (!isReady) return;
+    const elapsed = Date.now() - mountTime.current;
+    const remaining = Math.max(0, SPLASH_MIN_MS - elapsed);
+    const timer = setTimeout(() => {
+      navigate('/dashboard', { replace: true });
+    }, remaining);
+    return () => clearTimeout(timer);
   }, [isReady, navigate]);
 
   return (
