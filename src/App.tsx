@@ -9,6 +9,7 @@ import { LearningPath } from './screens/LearningPath';
 import { ProgressScreen } from './screens/ProgressScreen';
 import { HeatMapScreen } from './screens/HeatMapScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
+import { LegalScreen } from './screens/LegalScreen';
 
 function RouteWrapper({ children }: { children: React.ReactNode }) {
   const { pathname } = useLocation();
@@ -39,6 +40,7 @@ function App() {
           <Route path="/progress" element={<ProgressScreen />} />
           <Route path="/heat-map" element={<HeatMapScreen />} />
           <Route path="/settings" element={<SettingsScreen />} />
+          <Route path="/legal" element={<LegalScreen />} />
         </Routes>
       </RouteWrapper>
     </div>

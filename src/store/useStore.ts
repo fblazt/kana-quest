@@ -8,11 +8,13 @@ interface AppState {
   activeKana: Kana | null;
   theme: 'light' | 'dark';
   soundEffects: boolean;
+  dailyReminders: boolean;
 
   // Actions
   initializeApp: () => Promise<void>;
   toggleTheme: () => void;
   toggleSoundEffects: () => void;
+  toggleDailyReminders: () => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -22,6 +24,7 @@ export const useAppStore = create<AppState>((set) => ({
   theme: (localStorage.getItem('theme') as 'light' | 'dark') ||
          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'),
   soundEffects: localStorage.getItem('soundEffects') !== 'false',
+  dailyReminders: localStorage.getItem('dailyReminders') === 'true',
 
   toggleTheme: () => set((state) => {
     const newTheme = state.theme === 'light' ? 'dark' : 'light';
@@ -38,6 +41,12 @@ export const useAppStore = create<AppState>((set) => ({
     const next = !state.soundEffects;
     localStorage.setItem('soundEffects', String(next));
     return { soundEffects: next };
+  }),
+
+  toggleDailyReminders: () => set((state) => {
+    const next = !state.dailyReminders;
+    localStorage.setItem('dailyReminders', String(next));
+    return { dailyReminders: next };
   }),
 
   initializeApp: async () => {

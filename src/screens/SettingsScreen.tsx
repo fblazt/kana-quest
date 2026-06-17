@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { AppLayout } from '../components/layout/AppLayout';
 import { useAppStore } from '../store/useStore';
 
@@ -62,13 +63,16 @@ const SettingsRow: React.FC<SettingsRowProps> = ({ icon, label, action, danger =
 };
 
 export const SettingsScreen: React.FC = () => {
-  const { theme, toggleTheme, soundEffects, toggleSoundEffects } = useAppStore();
+  const { theme, toggleTheme, soundEffects, toggleSoundEffects, dailyReminders, toggleDailyReminders } = useAppStore();
 
   const handleReset = () => {
     const confirmed = window.confirm('Reset all progress? This cannot be undone.');
     if (!confirmed) return;
     try {
       localStorage.removeItem('kana-quest-progress');
+      localStorage.removeItem('theme');
+      localStorage.removeItem('soundEffects');
+      localStorage.removeItem('dailyReminders');
       window.location.reload();
     } catch (err) {
       console.error('Failed to reset progress:', err);
@@ -100,7 +104,16 @@ export const SettingsScreen: React.FC = () => {
             <SettingsRow
               icon="notifications"
               label="Daily Reminders"
-              action={<span className="font-sans text-[14px] font-medium text-primary flex items-center gap-xs">19:00 <span className="material-symbols-outlined text-[16px]">chevron_right</span></span>}
+              action={
+                <div className="flex items-center gap-3">
+                  <span className="font-sans text-[13px] text-on-surface-variant tabular-nums">7:00</span>
+                  <Toggle
+                    label="Daily Reminders"
+                    checked={dailyReminders}
+                    onChange={toggleDailyReminders}
+                  />
+                </div>
+              }
             />
           </div>
         </section>
@@ -144,20 +157,26 @@ export const SettingsScreen: React.FC = () => {
               <p className="font-sans text-[14px] text-on-surface-variant">Version 2.1.0 (Zen System)</p>
             </div>
             <div className="border-t border-outline-variant/30 pt-sm">
-              <div className="flex items-center justify-between py-sm cursor-pointer hover:opacity-80 transition-opacity">
+              <Link
+                to="/legal?kind=privacy"
+                className="flex items-center justify-between py-sm hover:opacity-80 transition-opacity"
+              >
                 <div className="flex items-center gap-md">
                   <span className="material-symbols-outlined text-on-surface-variant text-[20px]">policy</span>
                   <span className="font-sans text-[16px] text-on-surface">Privacy Policy</span>
                 </div>
-                <span className="material-symbols-outlined text-on-surface-variant text-[16px]">open_in_new</span>
-              </div>
-              <div className="flex items-center justify-between py-sm cursor-pointer hover:opacity-80 transition-opacity">
+                <span className="material-symbols-outlined text-on-surface-variant text-[16px]">arrow_forward</span>
+              </Link>
+              <Link
+                to="/legal?kind=terms"
+                className="flex items-center justify-between py-sm hover:opacity-80 transition-opacity"
+              >
                 <div className="flex items-center gap-md">
                   <span className="material-symbols-outlined text-on-surface-variant text-[20px]">description</span>
                   <span className="font-sans text-[16px] text-on-surface">Terms of Service</span>
                 </div>
-                <span className="material-symbols-outlined text-on-surface-variant text-[16px]">open_in_new</span>
-              </div>
+                <span className="material-symbols-outlined text-on-surface-variant text-[16px]">arrow_forward</span>
+              </Link>
             </div>
           </div>
         </section>

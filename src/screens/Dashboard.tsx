@@ -60,6 +60,7 @@ export const Dashboard: React.FC = () => {
         {/* Kana Cards (Bento Grid Style) */}
         <section className="grid grid-cols-2 gap-md mt-sm w-full text-left">
           {/* Hiragana Card */}
+          <Link to="/learning-path?type=hiragana" className="contents">
           <div className="bg-surface border border-surface-variant rounded-xl p-lg flex flex-col justify-between shadow-[0_10px_40px_-10px_rgba(24,36,66,0.04)] hover:-translate-y-1 transition-transform cursor-pointer relative overflow-hidden">
             <div className="absolute -right-4 -bottom-4 opacity-5 text-[80px] font-serif leading-none text-primary select-none pointer-events-none">あ</div>
             <div>
@@ -70,8 +71,10 @@ export const Dashboard: React.FC = () => {
               <div className="bg-primary h-full rounded-full" style={{ width: `${hiraganaMastery}%` }}></div>
             </div>
           </div>
-          
+          </Link>
+
           {/* Katakana Card */}
+          <Link to="/learning-path?type=katakana" className="contents">
           <div className="bg-surface border border-surface-variant rounded-xl p-lg flex flex-col justify-between shadow-[0_10px_40px_-10px_rgba(24,36,66,0.04)] hover:-translate-y-1 transition-transform cursor-pointer relative overflow-hidden">
             <div className="absolute -right-4 -bottom-4 opacity-5 text-[80px] font-serif leading-none text-primary select-none pointer-events-none">ア</div>
             <div>
@@ -82,6 +85,7 @@ export const Dashboard: React.FC = () => {
               <div className="bg-primary h-full rounded-full" style={{ width: `${katakanaMastery}%` }}></div>
             </div>
           </div>
+          </Link>
         </section>
       </div>
     </AppLayout>

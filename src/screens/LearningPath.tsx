@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams, Link } from 'react-router-dom';
 import { AppLayout } from '../components/layout/AppLayout';
 import { initDB, seedDatabaseIfEmpty } from '../lib/db';
-import type { Kana } from '../types/kana';
+import type { Kana, KanaType } from '../types/kana';
 
 interface KanaGroup {
   name: string;
@@ -20,6 +21,16 @@ const learningPathGroups: Omit<KanaGroup, 'status' | 'mastery'>[] = [
   { name: 'N-Group', characters: ['な', 'に', 'ぬ', 'ね', 'の'], romaji: ['na', 'ni', 'nu', 'ne', 'no'], difficulty: 'Medium' },
   { name: 'H-Group', characters: ['は', 'ひ', 'ふ', 'へ', 'ほ'], romaji: ['ha', 'hi', 'fu', 'he', 'ho'], difficulty: 'Hard' },
   { name: 'M-Group', characters: ['ま', 'み', 'む', 'め', 'も'], romaji: ['ma', 'mi', 'mu', 'me', 'mo'], difficulty: 'Hard' },
+];
+
+const katakanaPathGroups: Omit<KanaGroup, 'status' | 'mastery'>[] = [
+  { name: 'Vowels', characters: ['ア', 'イ', 'ウ', 'エ', 'オ'], romaji: ['a', 'i', 'u', 'e', 'o'], difficulty: 'Easy' },
+  { name: 'K-Group', characters: ['カ', 'キ', 'ク', 'ケ', 'コ'], romaji: ['ka', 'ki', 'ku', 'ke', 'ko'], difficulty: 'Easy' },
+  { name: 'S-Group', characters: ['サ', 'シ', 'ス', 'セ', 'ソ'], romaji: ['sa', 'shi', 'su', 'se', 'so'], difficulty: 'Medium' },
+  { name: 'T-Group', characters: ['タ', 'チ', 'ツ', 'テ', 'ト'], romaji: ['ta', 'chi', 'tsu', 'te', 'to'], difficulty: 'Medium' },
+  { name: 'N-Group', characters: ['ナ', 'ニ', 'ヌ', 'ネ', 'ノ'], romaji: ['na', 'ni', 'nu', 'ne', 'no'], difficulty: 'Medium' },
+  { name: 'H-Group', characters: ['ハ', 'ヒ', 'フ', 'ヘ', 'ホ'], romaji: ['ha', 'hi', 'fu', 'he', 'ho'], difficulty: 'Hard' },
+  { name: 'M-Group', characters: ['マ', 'ミ', 'ム', 'メ', 'モ'], romaji: ['ma', 'mi', 'mu', 'me', 'mo'], difficulty: 'Hard' },
 ];
 
 function calculateGroupMastery(characters: string[], allKana: Kana[]): number {
@@ -47,6 +58,10 @@ function DifficultyBadge({ difficulty }: { difficulty: string }) {
 }
 
 export const LearningPath: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const kanaType: KanaType = searchParams.get('type') === 'katakana' ? 'katakana' : 'hiragana';
+  const groups = kanaType === 'katakana' ? katakanaPathGroups : learningPathGroups;
+
   const [allKana, setAllKana] = useState<Kana[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -55,7 +70,7 @@ export const LearningPath: React.FC = () => {
     const load = async () => {
       await seedDatabaseIfEmpty();
       const db = await initDB();
-      const kana = await db.getAll('kana_deck');
+      const kana = (await db.getAll('kana_deck')).filter((k: Kana) => k.type === kanaType);
       if (!cancelled) {
         setAllKana(kana);
         setLoading(false);
@@ -64,16 +79,16 @@ export const LearningPath: React.FC = () => {
     };
     load();
     return () => { cancelled = true; };
-  }, []);
+  }, [kanaType]);
 
-  const learningPath: KanaGroup[] = learningPathGroups.map((group, index) => {
+  const learningPath: KanaGroup[] = groups.map((group, index) => {
     const mastery = calculateGroupMastery(group.characters, allKana);
     let status: KanaGroup['status'] = 'locked';
 
     if (index === 0) {
       status = mastery >= 90 ? 'mastered' : 'current';
     } else {
-      const prevGroup = learningPathGroups[index - 1];
+      const prevGroup = groups[index - 1];
       const prevMastery = calculateGroupMastery(prevGroup.characters, allKana);
       if (prevMastery >= 90) {
         status = mastery >= 90 ? 'mastered' : 'current';
@@ -99,7 +114,7 @@ export const LearningPath: React.FC = () => {
     <AppLayout>
       <div className="px-6 pt-4 pb-6">
         <h2 className="font-serif text-xl font-medium text-primary text-center mb-1">
-          Hiragana Path
+          {kanaType === 'katakana' ? 'Katakana Path' : 'Hiragana Path'}
         </h2>
         <p className="font-sans text-sm text-on-surface-variant text-center mb-1">
           Master the foundations. Follow the path to unlock new characters.
@@ -120,11 +135,39 @@ export const LearningPath: React.FC = () => {
               )}
               
               {/* Node */}
+              {group.status === 'current' ? (
+                <Link
+                  to={`/practice?mode=practice&type=${kanaType}`}
+                  className={`block w-full max-w-sm p-4 rounded-xl border transition-all active:scale-[0.99] ${
+                    'bg-surface-container-lowest border-primary shadow-[0_0_0_3px_rgba(24,36,66,0.1)]'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-12 h-12 rounded-full flex items-center justify-center border-2 ${
+                        'bg-surface-container-lowest text-primary border-primary'
+                      }`}>
+                        <span className="font-serif text-lg">{group.characters[0]}</span>
+                      </div>
+                      <div>
+                        <p className="font-sans text-sm font-semibold text-on-surface">
+                          {group.name}
+                        </p>
+                        <p className="font-sans text-xs text-on-surface-variant">
+                          {group.romaji.join('-')} · {group.mastery}%
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <DifficultyBadge difficulty={group.difficulty} />
+                      <span className="material-symbols-outlined text-primary text-[20px]">play_arrow</span>
+                    </div>
+                  </div>
+                </Link>
+              ) : (
               <div className={`w-full max-w-sm p-4 rounded-xl border transition-all ${
                 group.status === 'mastered'
                   ? 'bg-primary/10 border-primary/30'
-                  : group.status === 'current'
-                  ? 'bg-surface-container-lowest border-primary shadow-[0_0_0_3px_rgba(24,36,66,0.1)]'
                   : 'bg-surface-container-lowest border-outline-variant/30 opacity-60'
               }`}>
                 <div className="flex items-center justify-between">
@@ -132,8 +175,6 @@ export const LearningPath: React.FC = () => {
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center border-2 ${
                       group.status === 'mastered'
                         ? 'bg-primary text-on-primary border-primary'
-                        : group.status === 'current'
-                        ? 'bg-surface-container-lowest text-primary border-primary'
                         : 'bg-surface-container-lowest text-on-surface-variant/40 border-outline-variant/30'
                     }`}>
                       <span className="font-serif text-lg">{group.characters[0]}</span>
@@ -151,7 +192,7 @@ export const LearningPath: React.FC = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     {group.status === 'locked' ? (
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-on-surface-variant/40"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                      <span className="material-symbols-outlined text-on-surface-variant/40 text-[18px]">lock</span>
                     ) : (
                       <>
                         {group.status === 'mastered' && (
@@ -165,6 +206,7 @@ export const LearningPath: React.FC = () => {
                   </div>
                 </div>
               </div>
+              )}
             </React.Fragment>
           ))}
         </div>
